@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Basket — Template B: Market Bento</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="fresh"] { --primary:#4f7d5c; --primary-fg:#ffffff; --accent:#f2a98a; --accent-fg:#3a2219; --highlight:#f3dd9b; --bg:#fbf9f4; --muted:#eef2ea; --card:#ffffff; --fg:#2f3a33; --muted-fg:#6f7b73; --border:#e3e8de; }
+  [data-theme="citrus"] { --primary:#a8664e; --primary-fg:#ffffff; --accent:#f6c48f; --accent-fg:#3b2614; --highlight:#c9dba3; --bg:#fffaf5; --muted:#fdeee3; --card:#ffffff; --fg:#3b2a22; --muted-fg:#86706a; --border:#f3e2d6; }
+  [data-theme="berry"] { --primary:#8a5a83; --primary-fg:#ffffff; --accent:#f3b5c4; --accent-fg:#3d1f2a; --highlight:#d9c8f0; --bg:#fcf8fb; --muted:#f5ecf3; --card:#ffffff; --fg:#362a33; --muted-fg:#7e6f7a; --border:#ecdfe8; }
+  [data-theme="ocean"] { --primary:#3f7f80; --primary-fg:#ffffff; --accent:#f4b4a6; --accent-fg:#3a201b; --highlight:#bfe5d8; --bg:#f7fbfa; --muted:#e8f3f1; --card:#ffffff; --fg:#263638; --muted-fg:#687d7f; --border:#d9e9e6; }
+  [data-theme="night"] { --primary:#8fcfa0; --primary-fg:#13261a; --accent:#f0b48c; --accent-fg:#2a1a10; --highlight:#e8d590; --bg:#1a201c; --muted:#222a25; --card:#232c26; --fg:#e6ece7; --muted-fg:#a3b1a7; --border:#313c35; }
+
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.6; }
+  h1,h2,h3,.logo { font-family:Poppins,sans-serif; line-height:1.15; }
+  a { color:inherit; text-decoration:none; }
+  img { display:block; width:100%; height:100%; object-fit:cover; }
+  .container { width:min(1200px, 100% - 32px); margin-inline:auto; }
+  section { padding:64px 0; }
+  .eyebrow { font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--primary); }
+  .title { font-size:clamp(1.7rem,3vw,2.4rem); margin:6px 0 10px; }
+  .sub { color:var(--muted-fg); }
+  .btn { display:inline-flex; align-items:center; gap:8px; height:46px; padding:0 22px; border-radius:999px; font-weight:600; border:1px solid transparent; cursor:pointer; font:600 .95rem Inter,sans-serif; }
+  .btn-primary { background:var(--primary); color:var(--primary-fg); }
+  .btn-ghost { border-color:var(--border); background:var(--card); color:var(--fg); }
+  .pill { display:inline-flex; gap:6px; align-items:center; padding:6px 14px; border-radius:999px; background:var(--card); border:1px solid var(--border); font-size:.82rem; font-weight:600; }
+
+  /* Switcher */
+  .switcher { position:fixed; right:16px; bottom:16px; z-index:100; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:10px 12px; box-shadow:0 10px 30px rgba(0,0,0,.18); }
+  .switcher p { font-size:.7rem; font-weight:700; text-transform:uppercase; color:var(--muted-fg); margin-bottom:6px; }
+  .swatches { display:flex; gap:8px; } .swatch { width:30px; height:30px; border-radius:50%; border:3px solid transparent; cursor:pointer; }
+  .swatch[aria-pressed="true"] { border-color:var(--fg); }
+
+  /* Header — floating pill nav */
+  header { position:sticky; top:12px; z-index:50; padding:0 16px; }
+  .nav { width:min(1200px,100%); margin:12px auto 0; display:flex; align-items:center; justify-content:space-between; background:var(--card); border:1px solid var(--border); border-radius:999px; padding:8px 8px 8px 20px; box-shadow:0 6px 20px rgba(0,0,0,.06); }
+  .logo { font-weight:800; font-size:1.15rem; display:flex; gap:8px; align-items:center; } .logo b { color:var(--primary); }
+  .links { display:flex; gap:26px; font-weight:500; font-size:.92rem; }
+
+  /* Split hero with stacked card slider */
+  .hero { padding:56px 0 40px; }
+  .hero-grid { display:grid; grid-template-columns:1fr 1.05fr; gap:48px; align-items:center; }
+  .hero h1 { font-size:clamp(2.4rem,5vw,4.2rem); margin:16px 0; }
+  .hero h1 em { font-style:normal; color:var(--primary); position:relative; }
+  .hero h1 em::after { content:""; position:absolute; left:0; right:0; bottom:4px; height:12px; background:var(--highlight); opacity:.55; z-index:-1; border-radius:6px; }
+  .hero p { color:var(--muted-fg); font-size:1.08rem; max-width:460px; margin-bottom:26px; }
+  .hero .cta { display:flex; gap:12px; flex-wrap:wrap; }
+  .trust { display:flex; gap:22px; margin-top:32px; } .trust strong { font-family:Poppins; font-size:1.4rem; display:block; } .trust span { font-size:.8rem; color:var(--muted-fg); }
+  .stack { position:relative; height:500px; }
+  .stack .s { position:absolute; inset:0; border-radius:32px; overflow:hidden; transition:transform .6s, opacity .6s; box-shadow:0 20px 50px rgba(0,0,0,.18); }
+  .stack .s figcaption { position:absolute; left:20px; bottom:20px; right:20px; background:color-mix(in srgb,var(--card) 92%,transparent); backdrop-filter:blur(8px); border-radius:18px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .stack .s figcaption b { font-family:Poppins; } .stack .s figcaption span { font-size:.82rem; color:var(--muted-fg); }
+  .s.p0 { transform:none; z-index:3; } .s.p1 { transform:translate(22px,-22px) scale(.95); z-index:2; opacity:.7; } .s.p2 { transform:translate(44px,-44px) scale(.9); z-index:1; opacity:.4; }
+  .stack-ctrl { position:absolute; top:20px; left:20px; z-index:5; display:flex; gap:8px; }
+  .stack-ctrl button { width:40px; height:40px; border-radius:50%; border:none; background:var(--card); color:var(--fg); font-size:1.1rem; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+  .blob { position:absolute; width:180px; height:180px; border-radius:50%; background:var(--accent); bottom:-30px; left:-40px; z-index:0; opacity:.9; }
+
+  /* Bento categories */
+  .bento { display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:200px; gap:16px; margin-top:32px; }
+  .tile { position:relative; border-radius:24px; overflow:hidden; background:var(--muted); }
+  .tile::after { content:""; position:absolute; inset:0; background:linear-gradient(transparent 45%, rgba(0,0,0,.65)); }
+  .tile div { position:absolute; left:18px; bottom:16px; z-index:2; color:#fff; }
+  .tile h3 { font-size:1.25rem; } .tile span { font-size:.82rem; opacity:.85; }
+  .tile img { transition:transform .5s; } .tile:hover img { transform:scale(1.06); }
+  .t-big { grid-column:span 2; grid-row:span 2; } .t-wide { grid-column:span 2; }
+  .tile.solid { background:var(--primary); color:var(--primary-fg); padding:22px; display:flex; flex-direction:column; justify-content:space-between; }
+  .tile.solid::after { display:none; } .tile.solid div { position:static; color:inherit; }
+  .tile.solid h3 { font-size:1.5rem; }
+
+  /* Offers rail */
+  .rail-head { display:flex; justify-content:space-between; align-items:end; gap:16px; }
+  .rail { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding:28px 0 8px; scrollbar-width:thin; }
+  .deal { flex:0 0 260px; scroll-snap-align:start; background:var(--card); border:1px solid var(--border); border-radius:22px; padding:12px; }
+  .deal .ph { height:170px; border-radius:16px; overflow:hidden; position:relative; }
+  .deal .tag { position:absolute; top:10px; left:10px; background:var(--accent); color:var(--accent-fg); font-size:.75rem; font-weight:700; padding:3px 10px; border-radius:999px; }
+  .deal h3 { font-size:1rem; margin:12px 6px 2px; } .deal .row { display:flex; justify-content:space-between; align-items:center; margin:0 6px 4px; }
+  .deal .pr { font-family:Poppins; font-weight:700; color:var(--primary); font-size:1.2rem; } .deal s { color:var(--muted-fg); font-size:.85rem; }
+  .add { width:36px; height:36px; border-radius:50%; border:none; background:var(--primary); color:var(--primary-fg); font-size:1.2rem; cursor:pointer; }
+
+  /* Testimonials */
+  .quotes { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:28px; }
+  .q { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:24px; }
+  .q .stars { color:var(--highlight); letter-spacing:2px; } .q p { margin:10px 0 16px; }
+  .who { display:flex; gap:10px; align-items:center; font-size:.88rem; } .av { width:38px; height:38px; border-radius:50%; background:var(--accent); color:var(--accent-fg); display:grid; place-items:center; font-weight:700; }
+
+  /* Feedback banner */
+  .fb { background:var(--primary); color:var(--primary-fg); border-radius:36px; padding:48px; display:grid; grid-template-columns:.85fr 1.15fr; gap:40px; position:relative; overflow:hidden; }
+  .fb::before { content:"🍋"; position:absolute; font-size:9rem; right:-20px; top:-40px; opacity:.18; transform:rotate(20deg); }
+  .fb .sub { color:inherit; opacity:.85; }
+  .fb .info { margin-top:28px; display:grid; gap:12px; font-size:.92rem; }
+  .fb form { background:var(--card); color:var(--fg); border-radius:24px; padding:26px; display:grid; gap:14px; position:relative; }
+  .fb .two { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label { font-size:.82rem; font-weight:600; display:grid; gap:6px; }
+  input, select, textarea { font:inherit; font-size:.92rem; color:var(--fg); background:var(--bg); border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
+  textarea { min-height:100px; resize:vertical; }
+  .emoji { display:flex; gap:8px; } .emoji button { flex:1; height:46px; border-radius:12px; border:1px solid var(--border); background:var(--bg); font-size:1.4rem; cursor:pointer; }
+  .emoji button.on { border-color:var(--primary); background:color-mix(in srgb,var(--primary) 15%,var(--bg)); }
+
+  footer { padding:32px 0 40px; color:var(--muted-fg); font-size:.88rem; }
+  .foot { display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; border-top:1px solid var(--border); padding-top:24px; }
+
+  @media (max-width:900px) {
+    .links { display:none; }
+    .hero-grid, .fb { grid-template-columns:1fr; } .stack { height:380px; }
+    .bento { grid-template-columns:1fr 1fr; grid-auto-rows:170px; }
+    .quotes { grid-template-columns:1fr; }
+    .fb { padding:28px; }
+  }
+  @media (max-width:560px) { .bento { grid-template-columns:1fr; } .t-big, .t-wide { grid-column:auto; grid-row:auto; } .fb .two { grid-template-columns:1fr; } .nav .btn { display:none; } }
+</style>
+</head>
+<body data-theme="fresh">
+
+<div class="switcher"><p>Theme</p><div class="swatches">
+  <button class="swatch" data-set="fresh"  aria-pressed="true"  title="Sage Garden"  style="background:linear-gradient(135deg,#4f7d5c 50%,#f2a98a 50%)"></button>
+  <button class="swatch" data-set="citrus" aria-pressed="false" title="Peach Sorbet"   style="background:linear-gradient(135deg,#a8664e 50%,#f6c48f 50%)"></button>
+  <button class="swatch" data-set="berry"  aria-pressed="false" title="Lavender Berry"  style="background:linear-gradient(135deg,#8a5a83 50%,#f3b5c4 50%)"></button>
+  <button class="swatch" data-set="ocean"  aria-pressed="false" title="Seafoam"   style="background:linear-gradient(135deg,#3f7f80 50%,#f4b4a6 50%)"></button>
+  <button class="swatch" data-set="night"  aria-pressed="false" title="Soft Night" style="background:linear-gradient(135deg,#1a201c 50%,#8fcfa0 50%)"></button>
+</div></div>
+
+<header><div class="nav">
+  <a class="logo" href="#">🧺 Fresh<b>Basket</b></a>
+  <nav class="links"><a href="#cats">Shop</a><a href="#deals">Deals</a><a href="#love">Reviews</a><a href="#feedback">Feedback</a></nav>
+  <a class="btn btn-primary" href="#feedback">Visit us today</a>
+</div></header>
+
+<main>
+  <section class="hero"><div class="container hero-grid">
+    <div>
+      <span class="pill">🟢 Open now · closes 10pm</span>
+      <h1>Good food starts with <em>fresh</em> groceries</h1>
+      <p>Hand-picked fruit, crisp vegetables and warm bread, waiting for you at your neighbourhood shop.</p>
+      <div class="cta"><a class="btn btn-primary" href="#cats">Explore the shop →</a><a class="btn btn-ghost" href="#feedback">📍 Get directions</a></div>
+      <div class="trust"><div><strong>40+</strong><span>Local farms</span></div><div><strong>4.9★</strong><span>Google rating</span></div><div><strong>12 yrs</strong><span>In the area</span></div></div>
+    </div>
+    <div class="stack" id="stack">
+      <div class="blob"></div>
+      <div class="stack-ctrl"><button id="prev" aria-label="Previous">‹</button><button id="next" aria-label="Next">›</button></div>
+      <figure class="s"><img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1200&q=75&auto=format&fit=crop" alt="Fresh fruit"><figcaption><div><b>Seasonal fruit</b><br><span>Up to 20% off this week</span></div>🍓</figcaption></figure>
+      <figure class="s"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1200&q=75&auto=format&fit=crop" alt="Vegetable market"><figcaption><div><b>Local vegetables</b><br><span>Delivered every morning</span></div>🥕</figcaption></figure>
+      <figure class="s"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1200&q=75&auto=format&fit=crop" alt="Fresh bread"><figcaption><div><b>Baked at dawn</b><br><span>Sourdough & pastries</span></div>🥖</figcaption></figure>
+    </div>
+  </div></section>
+
+  <section id="cats"><div class="container">
+    <span class="eyebrow">Browse the aisles</span>
+    <h2 class="title">Everything fresh, all in one place</h2>
+    <div class="bento">
+      <a class="tile t-big" href="#"><img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=1000&q=75&auto=format&fit=crop" alt="Fruits"><div><h3>Fruits</h3><span>120+ items</span></div></a>
+      <a class="tile" href="#"><img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=75&auto=format&fit=crop" alt="Vegetables"><div><h3>Vegetables</h3><span>90+ items</span></div></a>
+      <a class="tile" href="#"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=75&auto=format&fit=crop" alt="Dairy"><div><h3>Dairy & Eggs</h3><span>60+ items</span></div></a>
+      <a class="tile" href="#"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&q=75&auto=format&fit=crop" alt="Pantry"><div><h3>Pantry</h3><span>200+ items</span></div></a>
+      <div class="tile solid"><div><h3>Free delivery 🚲</h3></div><div style="font-size:.9rem;opacity:.9">On orders over $30 within 3 km. Call to order.</div></div>
+      <a class="tile t-wide" href="#"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1000&q=75&auto=format&fit=crop" alt="Bakery"><div><h3>Bakery</h3><span>Fresh every morning</span></div></a>
+      <a class="tile t-wide" href="#"><img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=1000&q=75&auto=format&fit=crop" alt="Drinks"><div><h3>Beverages</h3><span>80+ items</span></div></a>
+    </div>
+  </div></section>
+
+  <section id="deals" style="background:var(--muted)"><div class="container">
+    <div class="rail-head"><div><span class="eyebrow">Weekly deals</span><h2 class="title">Grab them while they last</h2></div><span class="pill">⏱ Ends Sunday</span></div>
+    <div class="rail">
+      <div class="deal"><div class="ph"><img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?w=600&q=75&auto=format&fit=crop" alt="Strawberries"><span class="tag">-20%</span></div><h3>Strawberries 500g</h3><div class="row"><div><span class="pr">$4.79</span> <s>$5.99</s></div><button class="add">+</button></div></div>
+      <div class="deal"><div class="ph"><img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?w=600&q=75&auto=format&fit=crop" alt="Bananas"><span class="tag">2 for 1</span></div><h3>Organic Bananas</h3><div class="row"><div><span class="pr">$1.49</span> <s>$2.98</s></div><button class="add">+</button></div></div>
+      <div class="deal"><div class="ph"><img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=600&q=75&auto=format&fit=crop" alt="Apples"><span class="tag">-15%</span></div><h3>Red Apples 1kg</h3><div class="row"><div><span class="pr">$2.54</span> <s>$2.99</s></div><button class="add">+</button></div></div>
+      <div class="deal"><div class="ph"><img src="https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=600&q=75&auto=format&fit=crop" alt="Blueberries"><span class="tag">-25%</span></div><h3>Blueberries 250g</h3><div class="row"><div><span class="pr">$2.99</span> <s>$3.99</s></div><button class="add">+</button></div></div>
+      <div class="deal"><div class="ph"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=75&auto=format&fit=crop" alt="Milk"><span class="tag">-10%</span></div><h3>Farm Milk 1L</h3><div class="row"><div><span class="pr">$1.35</span> <s>$1.50</s></div><button class="add">+</button></div></div>
+    </div>
+  </div></section>
+
+  <section id="love"><div class="container">
+    <span class="eyebrow">Neighbours say</span>
+    <h2 class="title">Loved around the block</h2>
+    <div class="quotes">
+      <div class="q"><div class="stars">★★★★★</div><p>“The freshest strawberries in town, and they always remember my name.”</p><div class="who"><span class="av">S</span><div><b>Sara M.</b><br>Regular since 2019</div></div></div>
+      <div class="q"><div class="stars">★★★★★</div><p>“Bread is still warm at 8am. My weekend starts here.”</p><div class="who"><span class="av">D</span><div><b>Daniel K.</b><br>Local resident</div></div></div>
+      <div class="q"><div class="stars">★★★★☆</div><p>“Great prices on veg and the free delivery is super handy.”</p><div class="who"><span class="av">A</span><div><b>Aisha R.</b><br>Busy parent</div></div></div>
+    </div>
+  </div></section>
+
+  <section id="feedback"><div class="container">
+    <div class="fb">
+      <div>
+        <span class="eyebrow" style="color:var(--highlight)">Feedback & visit</span>
+        <h2 class="title">Tell us how we're doing</h2>
+        <p class="sub">Your ideas shape what's on our shelves. Share a thought, a request or a compliment.</p>
+        <div class="info"><div>📍 123 Market Street, Springfield</div><div>🕒 Mon–Sat 7:00–22:00 · Sun 9:00–20:00</div><div>📞 (555) 012-3456</div></div>
+      </div>
+      <form onsubmit="event.preventDefault();this.querySelector('[type=submit]').textContent='✅ Thanks for your feedback!'">
+        <div class="two"><label>Name<input placeholder="Jane Doe"></label><label>Email<input placeholder="jane@example.com"></label></div>
+        <label>How was your visit?</label>
+        <div class="emoji" id="emoji"><button type="button">😞</button><button type="button">😕</button><button type="button">😐</button><button type="button" class="on">🙂</button><button type="button">😍</button></div>
+        <label>Topic<select><option>Product quality</option><option>Service</option><option>Pricing</option><option>Suggestion</option><option>Other</option></select></label>
+        <label>Message<textarea placeholder="Tell us more…"></textarea></label>
+        <button class="btn btn-primary" type="submit" style="justify-content:center">Send feedback</button>
+      </form>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="container foot"><span>🧺 <b>FreshBasket</b> · Your neighbourhood grocery</span><span>© 2026 Fresh Basket</span></div></footer>
+
+<script>
+  document.querySelectorAll(".swatch").forEach(b => b.onclick = () => { document.body.dataset.theme = b.dataset.set; document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s === b)); });
+  const cards = [...document.querySelectorAll(".s")]; let i = 0;
+  const render = () => cards.forEach((c, k) => c.className = "s p" + ((k - i + cards.length) % cards.length));
+  const go = d => { i = (i + d + cards.length) % cards.length; render(); };
+  document.getElementById("next").onclick = () => go(1); document.getElementById("prev").onclick = () => go(-1);
+  render(); setInterval(() => go(1), 4500);
+  document.querySelectorAll("#emoji button").forEach(b => b.onclick = () => document.querySelectorAll("#emoji button").forEach(x => x.classList.toggle("on", x === b)));
+</script>
+</body>
+</html>

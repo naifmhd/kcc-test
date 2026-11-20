@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Basket — Template C: Fresh Magazine</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root, [data-theme="fresh"] { --primary:#4f7d5c; --primary-fg:#ffffff; --accent:#f2a98a; --accent-fg:#3a2219; --highlight:#f3dd9b; --bg:#fbf9f4; --muted:#eef2ea; --card:#ffffff; --fg:#2f3a33; --muted-fg:#6f7b73; --border:#e3e8de; }
+  [data-theme="citrus"] { --primary:#a8664e; --primary-fg:#ffffff; --accent:#f6c48f; --accent-fg:#3b2614; --highlight:#c9dba3; --bg:#fffaf5; --muted:#fdeee3; --card:#ffffff; --fg:#3b2a22; --muted-fg:#86706a; --border:#f3e2d6; }
+  [data-theme="berry"] { --primary:#8a5a83; --primary-fg:#ffffff; --accent:#f3b5c4; --accent-fg:#3d1f2a; --highlight:#d9c8f0; --bg:#fcf8fb; --muted:#f5ecf3; --card:#ffffff; --fg:#362a33; --muted-fg:#7e6f7a; --border:#ecdfe8; }
+  [data-theme="ocean"] { --primary:#3f7f80; --primary-fg:#ffffff; --accent:#f4b4a6; --accent-fg:#3a201b; --highlight:#bfe5d8; --bg:#f7fbfa; --muted:#e8f3f1; --card:#ffffff; --fg:#263638; --muted-fg:#687d7f; --border:#d9e9e6; }
+  [data-theme="night"] { --primary:#8fcfa0; --primary-fg:#13261a; --accent:#f0b48c; --accent-fg:#2a1a10; --highlight:#e8d590; --bg:#1a201c; --muted:#222a25; --card:#232c26; --fg:#e6ece7; --muted-fg:#a3b1a7; --border:#313c35; }
+
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--fg); line-height:1.6; }
+  h1,h2,h3,.logo { font-family:Fraunces,Georgia,serif; line-height:1.1; letter-spacing:-.01em; }
+  a { color:inherit; text-decoration:none; }
+  img { display:block; width:100%; height:100%; object-fit:cover; }
+  .container { width:min(1160px, 100% - 32px); margin-inline:auto; }
+  section { padding:72px 0; }
+  .kicker { font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+  .title { font-size:clamp(2rem,4vw,3rem); margin:8px 0 12px; }
+  .sub { color:var(--muted-fg); max-width:560px; }
+  .center { text-align:center; } .center .sub { margin-inline:auto; }
+  .btn { display:inline-flex; align-items:center; gap:8px; height:48px; padding:0 26px; border-radius:6px; font:600 .95rem Inter,sans-serif; border:none; cursor:pointer; }
+  .btn-primary { background:var(--primary); color:var(--primary-fg); }
+  .btn-dark { background:var(--fg); color:var(--bg); }
+
+  .switcher { position:fixed; right:16px; bottom:16px; z-index:100; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px 12px; box-shadow:0 10px 30px rgba(0,0,0,.18); }
+  .switcher p { font-size:.7rem; font-weight:700; text-transform:uppercase; color:var(--muted-fg); margin-bottom:6px; }
+  .swatches { display:flex; gap:8px; } .swatch { width:30px; height:30px; border-radius:50%; border:3px solid transparent; cursor:pointer; }
+  .swatch[aria-pressed="true"] { border-color:var(--fg); }
+
+  /* Top bar + centered header */
+  .topbar { background:var(--primary); color:var(--primary-fg); text-align:center; font-size:.82rem; font-weight:600; padding:8px 16px; }
+  header { border-bottom:1px solid var(--border); background:var(--bg); position:sticky; top:0; z-index:50; }
+  .nav { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; height:72px; }
+  .nav nav { display:flex; gap:24px; font-size:.9rem; font-weight:500; }
+  .nav nav.right { justify-content:flex-end; }
+  .logo { font-size:1.6rem; font-weight:800; } .logo span { color:var(--primary); }
+
+  /* Editorial hero */
+  .hero { padding:56px 0 32px; text-align:center; }
+  .hero h1 { font-size:clamp(2.6rem,7vw,5.6rem); max-width:900px; margin:12px auto 18px; }
+  .hero h1 i { color:var(--primary); }
+  .hero p { color:var(--muted-fg); font-size:1.1rem; max-width:560px; margin:0 auto 28px; }
+  .slider { position:relative; margin-top:40px; border-radius:28px; overflow:hidden; height:min(62vh,540px); min-height:340px; }
+  .slider .sl { position:absolute; inset:0; opacity:0; transition:opacity .9s; }
+  .slider .sl.on { opacity:1; }
+  .slider .sl img { transform:scale(1.06); transition:transform 6s linear; } .slider .sl.on img { transform:scale(1); }
+  .slider .cap { position:absolute; left:28px; bottom:28px; background:var(--card); color:var(--fg); border-radius:16px; padding:16px 22px; text-align:left; max-width:340px; box-shadow:0 10px 30px rgba(0,0,0,.2); }
+  .slider .cap b { font-family:Fraunces,serif; font-size:1.3rem; display:block; } .slider .cap span { font-size:.88rem; color:var(--muted-fg); }
+  .thumbs { display:flex; justify-content:center; gap:12px; margin-top:-44px; position:relative; z-index:3; }
+  .thumbs button { width:88px; height:62px; border-radius:12px; overflow:hidden; border:3px solid var(--bg); padding:0; cursor:pointer; opacity:.7; transition:opacity .2s, transform .2s; }
+  .thumbs button.on { opacity:1; border-color:var(--primary); transform:translateY(-4px); }
+
+  /* Round categories */
+  .circles { display:flex; justify-content:center; flex-wrap:wrap; gap:28px; margin-top:36px; }
+  .circle { text-align:center; width:130px; }
+  .circle .ring { width:130px; height:130px; border-radius:50%; overflow:hidden; border:4px solid var(--card); outline:3px solid var(--border); transition:outline-color .2s, transform .2s; }
+  .circle:hover .ring { outline-color:var(--primary); transform:translateY(-4px); }
+  .circle h3 { font-size:1.05rem; margin-top:12px; } .circle span { font-size:.8rem; color:var(--muted-fg); }
+
+  /* Deal of the day band */
+  .deal { background:var(--accent); color:var(--accent-fg); }
+  .deal-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+  .deal .ph { border-radius:50%; overflow:hidden; aspect-ratio:1; max-width:420px; margin:auto; border:10px solid color-mix(in srgb,#fff 35%,transparent); }
+  .deal .kicker { color:inherit; opacity:.85; }
+  .deal .price { font-family:Fraunces,serif; font-size:3.4rem; font-weight:800; } .deal .price s { font-size:1.4rem; opacity:.6; margin-left:10px; }
+  .count { display:flex; gap:12px; margin:20px 0 28px; }
+  .count div { background:color-mix(in srgb,#000 14%,transparent); border-radius:12px; padding:10px 14px; text-align:center; min-width:72px; }
+  .count b { font-family:Fraunces,serif; font-size:1.8rem; display:block; line-height:1; } .count span { font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+
+  /* Zig-zag story */
+  .zz { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; margin-top:48px; }
+  .zz + .zz .pic { order:2; }
+  .zz .pic { border-radius:24px; overflow:hidden; aspect-ratio:4/3; }
+  .zz .num { font-family:Fraunces,serif; font-size:3.5rem; color:var(--highlight); font-weight:800; line-height:1; }
+  .zz h3 { font-size:1.8rem; margin:8px 0 10px; } .zz p { color:var(--muted-fg); }
+
+  /* Feedback */
+  .fb-wrap { background:var(--muted); }
+  .fb-card { max-width:760px; margin:36px auto 0; background:var(--card); border:1px solid var(--border); border-radius:24px; padding:36px; box-shadow:0 20px 50px rgba(0,0,0,.06); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  label { display:grid; gap:6px; font-size:.84rem; font-weight:600; margin-bottom:16px; }
+  input, select, textarea { font:inherit; font-size:.92rem; color:var(--fg); background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:11px 12px; }
+  textarea { min-height:120px; resize:vertical; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .chip { border:1px solid var(--border); background:var(--bg); color:var(--fg); border-radius:999px; padding:7px 14px; font:500 .85rem Inter,sans-serif; cursor:pointer; }
+  .chip.on { background:var(--primary); color:var(--primary-fg); border-color:var(--primary); }
+  .rate { display:flex; gap:4px; font-size:1.9rem; color:var(--border); margin-bottom:16px; cursor:pointer; } .rate .on { color:var(--highlight); }
+
+  /* Visit strip + footer */
+  .visit { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--border); border-radius:20px; overflow:hidden; }
+  .visit > div { padding:28px; border-right:1px solid var(--border); background:var(--card); } .visit > div:last-child { border:none; }
+  .visit h3 { font-size:1.2rem; margin-bottom:8px; } .visit p { color:var(--muted-fg); font-size:.92rem; }
+  footer { text-align:center; padding:48px 0; border-top:1px solid var(--border); color:var(--muted-fg); font-size:.88rem; }
+  footer .logo { color:var(--fg); display:block; margin-bottom:8px; }
+
+  @media (max-width:860px) {
+    .nav { grid-template-columns:auto 1fr; } .nav nav.left { display:none; } .nav .logo { grid-column:1; }
+    .deal-grid, .zz, .visit { grid-template-columns:1fr; } .zz + .zz .pic { order:0; }
+    .visit > div { border-right:none; border-bottom:1px solid var(--border); }
+    .thumbs button { width:64px; height:46px; }
+  }
+  @media (max-width:560px) { .nav nav.right a:not(.btn) { display:none; } .grid2 { grid-template-columns:1fr; } .fb-card { padding:22px; } .circle, .circle .ring { width:100px; } .circle .ring { height:100px; } .slider .cap { left:12px; right:12px; bottom:56px; } }
+</style>
+</head>
+<body data-theme="fresh">
+
+<div class="switcher"><p>Theme</p><div class="swatches">
+  <button class="swatch" data-set="fresh"  aria-pressed="true"  title="Sage Garden"  style="background:linear-gradient(135deg,#4f7d5c 50%,#f2a98a 50%)"></button>
+  <button class="swatch" data-set="citrus" aria-pressed="false" title="Peach Sorbet"   style="background:linear-gradient(135deg,#a8664e 50%,#f6c48f 50%)"></button>
+  <button class="swatch" data-set="berry"  aria-pressed="false" title="Lavender Berry"  style="background:linear-gradient(135deg,#8a5a83 50%,#f3b5c4 50%)"></button>
+  <button class="swatch" data-set="ocean"  aria-pressed="false" title="Seafoam"   style="background:linear-gradient(135deg,#3f7f80 50%,#f4b4a6 50%)"></button>
+  <button class="swatch" data-set="night"  aria-pressed="false" title="Soft Night" style="background:linear-gradient(135deg,#1a201c 50%,#8fcfa0 50%)"></button>
+</div></div>
+
+<div class="topbar">🚲 Free local delivery on orders over $30 · Open today 7am – 10pm</div>
+<header><div class="container nav">
+  <nav class="left"><a href="#aisles">Aisles</a><a href="#deal">Deal of the day</a><a href="#story">Our story</a></nav>
+  <a class="logo" href="#">Fresh<span>Basket</span></a>
+  <nav class="right"><a href="#visit">Visit</a><a class="btn btn-primary" href="#feedback" style="height:40px;padding:0 18px">Feedback</a></nav>
+</div></header>
+
+<main>
+  <section class="hero"><div class="container">
+    <span class="kicker">Neighbourhood grocer · Since 2014</span>
+    <h1>Real food, <i>picked fresh</i> for your table.</h1>
+    <p>A small shop with big flavour: local produce, warm bread and friendly faces, just around the corner.</p>
+    <a class="btn btn-dark" href="#aisles">Explore the aisles</a>
+    <div class="slider" id="slider">
+      <div class="sl on"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1800&q=80&auto=format&fit=crop" alt="Produce shelves"><div class="cap"><b>Fresh every morning</b><span>Shelves restocked at 6am daily</span></div></div>
+      <div class="sl"><img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1800&q=80&auto=format&fit=crop" alt="Fruit"><div class="cap"><b>Fruit festival</b><span>20% off seasonal fruit this week</span></div></div>
+      <div class="sl"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1800&q=80&auto=format&fit=crop" alt="Vegetables"><div class="cap"><b>Grown nearby</b><span>From 40+ local farms</span></div></div>
+      <div class="sl"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1800&q=80&auto=format&fit=crop" alt="Bread"><div class="cap"><b>The bakery corner</b><span>Sourdough out of the oven by 7</span></div></div>
+    </div>
+    <div class="thumbs" id="thumbs">
+      <button class="on"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=200&q=60&auto=format&fit=crop" alt="Slide 1"></button>
+      <button><img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=200&q=60&auto=format&fit=crop" alt="Slide 2"></button>
+      <button><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200&q=60&auto=format&fit=crop" alt="Slide 3"></button>
+      <button><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200&q=60&auto=format&fit=crop" alt="Slide 4"></button>
+    </div>
+  </div></section>
+
+  <section id="aisles" style="padding-top:40px"><div class="container center">
+    <span class="kicker">The aisles</span>
+    <h2 class="title">What's on our shelves</h2>
+    <div class="circles">
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=300&q=70&auto=format&fit=crop" alt="Fruits"></div><h3>Fruits</h3><span>120+ items</span></a>
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300&q=70&auto=format&fit=crop" alt="Vegetables"></div><h3>Vegetables</h3><span>90+ items</span></a>
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=70&auto=format&fit=crop" alt="Dairy"></div><h3>Dairy & Eggs</h3><span>60+ items</span></a>
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=70&auto=format&fit=crop" alt="Bakery"></div><h3>Bakery</h3><span>40+ items</span></a>
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300&q=70&auto=format&fit=crop" alt="Pantry"></div><h3>Pantry</h3><span>200+ items</span></a>
+      <a class="circle" href="#"><div class="ring"><img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=300&q=70&auto=format&fit=crop" alt="Drinks"></div><h3>Beverages</h3><span>80+ items</span></a>
+    </div>
+  </div></section>
+
+  <section id="deal" class="deal"><div class="container deal-grid">
+    <div class="ph"><img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?w=900&q=75&auto=format&fit=crop" alt="Strawberries"></div>
+    <div>
+      <span class="kicker">Deal of the day</span>
+      <h2 class="title">Sweet local strawberries</h2>
+      <p style="opacity:.9;max-width:420px">Picked yesterday, on our shelves this morning. 500g punnet, while stocks last.</p>
+      <div class="price">$3.49<s>$5.99</s></div>
+      <div class="count" id="count"><div><b>08</b><span>Hours</span></div><div><b>42</b><span>Mins</span></div><div><b>15</b><span>Secs</span></div></div>
+      <a class="btn btn-dark" href="#visit">Reserve in store</a>
+    </div>
+  </div></section>
+
+  <section id="story"><div class="container">
+    <div class="center"><span class="kicker">Our story</span><h2 class="title">Small shop, big heart</h2></div>
+    <div class="zz"><div class="pic"><img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=1000&q=75&auto=format&fit=crop" alt="Inside the shop"></div>
+      <div><div class="num">01</div><h3>From a corner stand to your local grocer</h3><p>We started with one fruit crate in 2014. Twelve years later we're still family-run, still hand-picking every box, and still learning your names.</p></div></div>
+    <div class="zz"><div class="pic"><img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1000&q=75&auto=format&fit=crop" alt="Local market"></div>
+      <div><div class="num">02</div><h3>Local farms, short journeys</h3><p>Most of our produce travels less than 50 miles. That means fresher food, fairer prices for growers and a smaller footprint for all of us.</p></div></div>
+  </div></section>
+
+  <section id="feedback" class="fb-wrap"><div class="container center">
+    <span class="kicker">Your voice</span>
+    <h2 class="title">How did we do?</h2>
+    <p class="sub">Every message is read by the owners. Suggestions often end up on our shelves!</p>
+    <form class="fb-card" style="text-align:left" onsubmit="event.preventDefault();this.querySelector('[type=submit]').textContent='✅ Thank you, we got it!'">
+      <div class="grid2"><label>Full name<input placeholder="Jane Doe"></label><label>Email<input placeholder="jane@example.com"></label></div>
+      <label style="margin-bottom:8px">What's it about?</label>
+      <div class="chips" id="chips"><button type="button" class="chip on">Product quality</button><button type="button" class="chip">Service</button><button type="button" class="chip">Pricing</button><button type="button" class="chip">Suggestion</button><button type="button" class="chip">Other</button></div>
+      <label style="margin-bottom:4px">Rating</label>
+      <div class="rate" id="rate"><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span>★</span></div>
+      <label>Message<textarea placeholder="Share your experience…"></textarea></label>
+      <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Send feedback</button>
+    </form>
+  </div></section>
+
+  <section id="visit"><div class="container">
+    <div class="visit">
+      <div><h3>📍 Find us</h3><p>123 Market Street<br>Springfield · Free parking</p></div>
+      <div><h3>🕒 Hours</h3><p>Mon–Fri 7:00–22:00<br>Sat 8:00–22:00 · Sun 9:00–20:00</p></div>
+      <div><h3>📞 Say hello</h3><p>(555) 012-3456<br>hello@freshbasket.example</p></div>
+    </div>
+  </div></section>
+</main>
+
+<footer><a class="logo" href="#">Fresh<span style="color:var(--primary)">Basket</span></a>© 2026 Fresh Basket · Made with love in the neighbourhood</footer>
+
+<script>
+  document.querySelectorAll(".swatch").forEach(b => b.onclick = () => { document.body.dataset.theme = b.dataset.set; document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s === b)); });
+  const sls = [...document.querySelectorAll(".sl")], th = [...document.querySelectorAll("#thumbs button")]; let i = 0, t;
+  const go = n => { i = (n + sls.length) % sls.length; sls.forEach((s, k) => s.classList.toggle("on", k === i)); th.forEach((b, k) => b.classList.toggle("on", k === i)); };
+  const play = () => { clearInterval(t); t = setInterval(() => go(i + 1), 5000); };
+  th.forEach((b, k) => b.onclick = () => { go(k); play(); }); play();
+  document.querySelectorAll("#chips .chip").forEach(c => c.onclick = () => document.querySelectorAll("#chips .chip").forEach(x => x.classList.toggle("on", x === c)));
+  const stars = [...document.querySelectorAll("#rate span")]; stars.forEach((s, k) => s.onclick = () => stars.forEach((x, j) => x.classList.toggle("on", j <= k)));
+  let secs = 8*3600 + 42*60 + 15; const c = document.querySelectorAll("#count b");
+  setInterval(() => { secs = Math.max(0, secs - 1); [Math.floor(secs/3600), Math.floor(secs%3600/60), secs%60].forEach((v, k) => c[k].textContent = String(v).padStart(2, "0")); }, 1000);
+</script>
+</body>
+</html>

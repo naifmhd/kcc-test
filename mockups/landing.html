@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fresh Basket — Landing Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ========== THEME TOKENS (mirror shadcn CSS variables) ========== */
+  :root, [data-theme="fresh"] { --primary:#4f7d5c; --primary-fg:#ffffff; --accent:#f2a98a; --accent-fg:#3a2219; --highlight:#f3dd9b; --bg:#fbf9f4; --muted:#eef2ea; --card:#ffffff; --fg:#2f3a33; --muted-fg:#6f7b73; --border:#e3e8de; --hero-overlay: linear-gradient(90deg, rgba(30,50,38,.74), rgba(30,50,38,.08)); }
+  [data-theme="citrus"] { --primary:#a8664e; --primary-fg:#ffffff; --accent:#f6c48f; --accent-fg:#3b2614; --highlight:#c9dba3; --bg:#fffaf5; --muted:#fdeee3; --card:#ffffff; --fg:#3b2a22; --muted-fg:#86706a; --border:#f3e2d6; --hero-overlay: linear-gradient(90deg, rgba(70,40,28,.72), rgba(70,40,28,.08)); }
+  [data-theme="berry"] { --primary:#8a5a83; --primary-fg:#ffffff; --accent:#f3b5c4; --accent-fg:#3d1f2a; --highlight:#d9c8f0; --bg:#fcf8fb; --muted:#f5ecf3; --card:#ffffff; --fg:#362a33; --muted-fg:#7e6f7a; --border:#ecdfe8; --hero-overlay: linear-gradient(90deg, rgba(60,35,58,.72), rgba(60,35,58,.08)); }
+  [data-theme="ocean"] { --primary:#3f7f80; --primary-fg:#ffffff; --accent:#f4b4a6; --accent-fg:#3a201b; --highlight:#bfe5d8; --bg:#f7fbfa; --muted:#e8f3f1; --card:#ffffff; --fg:#263638; --muted-fg:#687d7f; --border:#d9e9e6; --hero-overlay: linear-gradient(90deg, rgba(25,50,52,.72), rgba(25,50,52,.08)); }
+  [data-theme="night"] { --primary:#8fcfa0; --primary-fg:#13261a; --accent:#f0b48c; --accent-fg:#2a1a10; --highlight:#e8d590; --bg:#1a201c; --muted:#222a25; --card:#232c26; --fg:#e6ece7; --muted-fg:#a3b1a7; --border:#313c35; --hero-overlay: linear-gradient(90deg, rgba(0,0,0,.7), rgba(0,0,0,.18)); }
+
+  /* ========== BASE ========== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; transition: background .3s, color .3s; }
+  h1, h2, h3, .logo { font-family: Poppins, sans-serif; line-height: 1.2; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  .container { width: min(1180px, 100% - 32px); margin-inline: auto; }
+  section { padding: 72px 0; }
+  .eyebrow { display: inline-block; font-size: .8rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+  .section-title { font-size: clamp(1.7rem, 3vw, 2.4rem); margin-bottom: 12px; }
+  .section-sub { color: var(--muted-fg); max-width: 560px; }
+  .center { text-align: center; } .center .section-sub { margin-inline: auto; }
+
+  /* shadcn-like primitives */
+  .btn { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 22px; border-radius: 12px; font-weight: 600; font-size: .95rem; border: 1px solid transparent; cursor: pointer; transition: transform .15s, box-shadow .15s, opacity .15s; font-family: inherit; }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.12); }
+  .btn-primary { background: var(--primary); color: var(--primary-fg); }
+  .btn-accent { background: var(--accent); color: var(--accent-fg); }
+  .btn-outline { background: transparent; border-color: currentColor; }
+  .btn-sm { height: 36px; padding: 0 14px; font-size: .85rem; border-radius: 10px; }
+  .badge { display: inline-flex; padding: 3px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; background: var(--accent); color: var(--accent-fg); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04); transition: transform .2s, box-shadow .2s; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,.1); }
+
+  /* ========== THEME SWITCHER (mockup-only) ========== */
+  .switcher { position: fixed; right: 16px; bottom: 16px; z-index: 100; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 10px 12px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+  .switcher p { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-fg); margin-bottom: 6px; }
+  .swatches { display: flex; gap: 8px; }
+  .swatch { width: 34px; height: 34px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; position: relative; }
+  .swatch[aria-pressed="true"] { border-color: var(--fg); }
+  .swatch span { position: absolute; inset: 0; border-radius: 50%; }
+  .swatch-label { font-size: .75rem; color: var(--fg); margin-top: 6px; font-weight: 600; text-align: center; }
+
+  /* ========== HEADER ========== */
+  header { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.25rem; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; background: var(--primary); color: var(--primary-fg); display: grid; place-items: center; font-size: 1.2rem; }
+  .logo b { color: var(--primary); }
+  .nav-links { display: flex; gap: 28px; font-weight: 500; font-size: .95rem; }
+  .nav-links a:hover { color: var(--primary); }
+  .menu-btn { display: none; background: none; border: 1px solid var(--border); border-radius: 10px; width: 40px; height: 40px; font-size: 1.2rem; color: var(--fg); }
+
+  /* ========== HERO SLIDER ========== */
+  .hero { position: relative; height: min(78vh, 640px); min-height: 460px; overflow: hidden; padding: 0; }
+  .slides { display: flex; height: 100%; transition: transform .7s cubic-bezier(.65,0,.35,1); }
+  .slide { min-width: 100%; height: 100%; position: relative; background: var(--muted); }
+  .slide img { width: 100%; height: 100%; object-fit: cover; }
+  .slide::after { content: ""; position: absolute; inset: 0; background: var(--hero-overlay); }
+  .slide-content { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; }
+  .slide-content .container { color: #fff; }
+  .slide-content .badge { background: var(--highlight); color: #1d1d1d; margin-bottom: 16px; }
+  .slide-content h1, .slide-content h2 { font-size: clamp(2.2rem, 5.5vw, 4rem); max-width: 640px; margin-bottom: 14px; }
+  .slide-content p { font-size: 1.1rem; max-width: 480px; opacity: .92; margin-bottom: 26px; }
+  .slide-content .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 3; width: 48px; height: 48px; border-radius: 50%; border: none; background: rgba(255,255,255,.85); color: #222; font-size: 1.3rem; cursor: pointer; }
+  .arrow:hover { background: #fff; }
+  .arrow.prev { left: 20px; } .arrow.next { right: 20px; }
+  .dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 3; display: flex; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; border: none; background: rgba(255,255,255,.55); cursor: pointer; transition: width .3s, background .3s; }
+  .dot.active { width: 30px; background: var(--highlight); }
+
+  /* ========== HIGHLIGHTS ========== */
+  .highlights { padding: 0; margin-top: -48px; position: relative; z-index: 5; }
+  .hl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .hl { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 22px; display: flex; gap: 14px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+  .hl-icon { flex: none; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font-size: 1.4rem; background: color-mix(in srgb, var(--primary) 14%, transparent); }
+  .hl h3 { font-size: 1rem; } .hl p { font-size: .85rem; color: var(--muted-fg); }
+
+  /* ========== CATEGORIES ========== */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 40px; }
+  .cat img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--muted); }
+  .cat-body { padding: 18px 20px 22px; }
+  .cat-body h3 { font-size: 1.15rem; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+  .cat-body h3 span { font-size: .8rem; color: var(--primary); font-family: Inter, sans-serif; font-weight: 600; }
+  .cat-body p { color: var(--muted-fg); font-size: .92rem; }
+
+  /* ========== OFFERS ========== */
+  .offers { background: var(--muted); }
+  .offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 40px; }
+  .offer { display: flex; flex-direction: column; }
+  .offer .img-wrap { position: relative; }
+  .offer .img-wrap img { aspect-ratio: 16/10; width: 100%; object-fit: cover; }
+  .offer .badge { position: absolute; top: 14px; left: 14px; }
+  .offer-body { padding: 18px 20px 22px; display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+  .price { font-family: Poppins, sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--primary); }
+  .price s { font-size: .9rem; color: var(--muted-fg); font-weight: 500; margin-left: 6px; }
+
+  /* ========== ABOUT ========== */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .about-img { position: relative; }
+  .about-img img { border-radius: 24px; aspect-ratio: 5/4; object-fit: cover; width: 100%; }
+  .about-img .stamp { position: absolute; bottom: -22px; right: -12px; background: var(--accent); color: var(--accent-fg); border-radius: 20px; padding: 16px 20px; font-family: Poppins, sans-serif; box-shadow: 0 10px 24px rgba(0,0,0,.15); }
+  .stamp strong { display: block; font-size: 1.8rem; line-height: 1; }
+  .about p { color: var(--muted-fg); margin-bottom: 14px; }
+  .stats { display: flex; gap: 32px; margin-top: 24px; }
+  .stats strong { font-family: Poppins, sans-serif; font-size: 1.6rem; color: var(--primary); display: block; }
+  .stats span { font-size: .85rem; color: var(--muted-fg); }
+
+  /* ========== VISIT ========== */
+  .visit { background: var(--muted); }
+  .visit-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; margin-top: 40px; }
+  .info-card { padding: 28px; }
+  .info-card:hover { transform: none; }
+  .info-row { display: flex; gap: 14px; margin-bottom: 20px; }
+  .info-row .hl-icon { width: 42px; height: 42px; font-size: 1.1rem; }
+  .info-row h3 { font-size: .95rem; } .info-row p { color: var(--muted-fg); font-size: .9rem; }
+  .hours { width: 100%; font-size: .9rem; border-collapse: collapse; }
+  .hours td { padding: 4px 0; color: var(--muted-fg); } .hours td:last-child { text-align: right; color: var(--fg); font-weight: 500; }
+  .map { border-radius: 18px; overflow: hidden; border: 1px solid var(--border); min-height: 360px; position: relative;
+    background:
+      linear-gradient(var(--border) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0/40px 40px,
+      var(--card); }
+  .map .road { position: absolute; background: color-mix(in srgb, var(--highlight) 55%, var(--card)); }
+  .map .pin { position: absolute; top: 44%; left: 52%; transform: translate(-50%,-100%); font-size: 2.6rem; filter: drop-shadow(0 4px 6px rgba(0,0,0,.3)); }
+  .map .label { position: absolute; top: 46%; left: 52%; transform: translateX(-50%); background: var(--card); padding: 6px 12px; border-radius: 10px; font-size: .8rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,.12); white-space: nowrap; }
+
+  /* ========== FEEDBACK FORM ========== */
+  .fb-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 48px; align-items: start; }
+  .fb-aside img { border-radius: 24px; aspect-ratio: 4/5; object-fit: cover; width: 100%; margin-top: 24px; }
+  .form-card { padding: 32px; }
+  .form-card:hover { transform: none; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .field label { font-size: .875rem; font-weight: 600; }
+  .field .hint { font-size: .75rem; color: var(--muted-fg); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  input, select, textarea { font: inherit; font-size: .92rem; color: var(--fg); background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; outline: none; transition: border-color .15s, box-shadow .15s; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent); }
+  textarea { min-height: 120px; resize: vertical; }
+  .field.error input { border-color: #d9686c; }
+  .field.error .msg { color: #d9686c; font-size: .78rem; }
+  .stars { display: flex; gap: 6px; }
+  .star { background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--border); transition: transform .1s; line-height: 1; }
+  .star.on { color: var(--highlight); }
+  .star:hover { transform: scale(1.15); }
+  .check { display: flex; gap: 10px; align-items: center; font-size: .88rem; color: var(--muted-fg); margin-bottom: 22px; }
+  .check input { width: 18px; height: 18px; accent-color: var(--primary); }
+  .counter { text-align: right; }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 120px); background: var(--card); color: var(--fg); border: 1px solid var(--border); border-left: 5px solid var(--primary); padding: 14px 18px; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,.18); font-weight: 600; font-size: .92rem; transition: transform .35s; z-index: 120; }
+  .toast.show { transform: translate(-50%, 0); }
+
+  /* ========== FOOTER ========== */
+  footer { background: var(--fg); color: var(--bg); padding: 56px 0 28px; }
+  [data-theme="night"] footer { background: #070b09; color: var(--fg); }
+  .foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; }
+  footer p, footer li { opacity: .75; font-size: .9rem; list-style: none; margin-bottom: 6px; }
+  footer h4 { font-family: Poppins, sans-serif; margin-bottom: 12px; }
+  .socials { display: flex; gap: 10px; margin-top: 14px; }
+  .socials a { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, currentColor 14%, transparent); font-size: .85rem; font-weight: 700; }
+  .copy { border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent); margin-top: 36px; padding-top: 18px; font-size: .82rem; opacity: .6; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .nav-links, .nav .btn { display: none; }
+    .menu-btn { display: block; }
+    .hl-grid { grid-template-columns: 1fr 1fr; }
+    .cat-grid, .offer-grid { grid-template-columns: 1fr 1fr; }
+    .about-grid, .visit-grid, .fb-grid, .foot-grid { grid-template-columns: 1fr; }
+    .fb-aside img { display: none; }
+  }
+  @media (max-width: 560px) {
+    section { padding: 56px 0; }
+    .hl-grid, .cat-grid, .offer-grid, .row { grid-template-columns: 1fr; }
+    .arrow { display: none; }
+    .form-card { padding: 22px; }
+    .about-img .stamp { right: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, .slides { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body data-theme="fresh">
+
+<!-- Theme switcher: mockup-only, for picking a palette -->
+<div class="switcher" role="group" aria-label="Theme">
+  <p>Theme</p>
+  <div class="swatches">
+    <button class="swatch" data-set="fresh"  title="Sage Garden"  aria-pressed="true"><span style="background:linear-gradient(135deg,#4f7d5c 50%,#f2a98a 50%)"></span></button>
+    <button class="swatch" data-set="citrus" title="Peach Sorbet"   aria-pressed="false"><span style="background:linear-gradient(135deg,#a8664e 50%,#f6c48f 50%)"></span></button>
+    <button class="swatch" data-set="berry"  title="Lavender Berry"  aria-pressed="false"><span style="background:linear-gradient(135deg,#8a5a83 50%,#f3b5c4 50%)"></span></button>
+    <button class="swatch" data-set="ocean"  title="Seafoam"   aria-pressed="false"><span style="background:linear-gradient(135deg,#3f7f80 50%,#f4b4a6 50%)"></span></button>
+    <button class="swatch" data-set="night"  title="Soft Night" aria-pressed="false"><span style="background:linear-gradient(135deg,#1a201c 50%,#8fcfa0 50%)"></span></button>
+  </div>
+  <div class="swatch-label" id="themeName">Sage Garden</div>
+</div>
+
+<header>
+  <div class="container nav">
+    <a href="#" class="logo"><span class="logo-mark">🧺</span>Fresh<b>Basket</b></a>
+    <nav class="nav-links">
+      <a href="#products">Products</a><a href="#offers">Offers</a><a href="#about">About</a><a href="#visit">Visit Us</a><a href="#feedback">Feedback</a>
+    </nav>
+    <a href="tel:+10000000000" class="btn btn-primary btn-sm">📞 Call us</a>
+    <button class="menu-btn" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<main>
+  <!-- HERO SLIDER (shadcn Carousel + embla autoplay in the real build) -->
+  <section class="hero" aria-roledescription="carousel" aria-label="Featured">
+    <div class="slides" id="slides">
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1800&q=80&auto=format&fit=crop" alt="Colourful produce stall">
+        <div class="slide-content"><div class="container">
+          <span class="badge">Open daily · 7am – 10pm</span>
+          <h1>Fresh from the farm to your table</h1>
+          <p>Your neighbourhood grocery for crisp vegetables, juicy fruit and everyday essentials.</p>
+          <div class="actions"><a href="#products" class="btn btn-accent">Shop categories</a><a href="#visit" class="btn btn-outline">Find us</a></div>
+        </div></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1800&q=80&auto=format&fit=crop" alt="Assorted bright fruits">
+        <div class="slide-content"><div class="container">
+          <span class="badge">This week</span>
+          <h2>Juicy seasonal fruit, picked at its peak</h2>
+          <p>Up to 20% off berries, citrus and tropical favourites.</p>
+          <div class="actions"><a href="#offers" class="btn btn-accent">See offers</a></div>
+        </div></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=1800&q=80&auto=format&fit=crop" alt="Vegetables at a market">
+        <div class="slide-content"><div class="container">
+          <span class="badge">Local growers</span>
+          <h2>Supporting farms within 50 miles</h2>
+          <p>Every week we restock with produce from local growers we know by name.</p>
+          <div class="actions"><a href="#about" class="btn btn-accent">Our story</a></div>
+        </div></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=1800&q=80&auto=format&fit=crop" alt="Freshly baked bread">
+        <div class="slide-content"><div class="container">
+          <span class="badge">Baked this morning</span>
+          <h2>Warm bread, every single morning</h2>
+          <p>Sourdough, baguettes and pastries from our partner bakery, delivered at dawn.</p>
+          <div class="actions"><a href="#products" class="btn btn-accent">Browse bakery</a></div>
+        </div></div>
+      </div>
+    </div>
+    <button class="arrow prev" aria-label="Previous slide">‹</button>
+    <button class="arrow next" aria-label="Next slide">›</button>
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <!-- HIGHLIGHTS -->
+  <section class="highlights">
+    <div class="container hl-grid">
+      <div class="hl"><div class="hl-icon">🥬</div><div><h3>Farm-fresh daily</h3><p>Restocked every morning</p></div></div>
+      <div class="hl"><div class="hl-icon">🌱</div><div><h3>Local produce</h3><p>From nearby growers</p></div></div>
+      <div class="hl"><div class="hl-icon">💰</div><div><h3>Fair prices</h3><p>No surprises at checkout</p></div></div>
+      <div class="hl"><div class="hl-icon">🚲</div><div><h3>Free delivery</h3><p>On orders over $30 nearby</p></div></div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="products">
+    <div class="container">
+      <div class="center">
+        <span class="eyebrow">What we stock</span>
+        <h2 class="section-title">Shop by category</h2>
+        <p class="section-sub">Everything you need for the week, in one friendly little shop around the corner.</p>
+      </div>
+      <div class="cat-grid">
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=800&q=75&auto=format&fit=crop" alt="Fresh fruit"><div class="cat-body"><h3>Fruits <span>120+ items</span></h3><p>Apples, berries, citrus and exotic picks.</p></div></article>
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=75&auto=format&fit=crop" alt="Vegetables"><div class="cat-body"><h3>Vegetables <span>90+ items</span></h3><p>Crisp greens, roots and seasonal veg.</p></div></article>
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&q=75&auto=format&fit=crop" alt="Milk and dairy"><div class="cat-body"><h3>Dairy &amp; Eggs <span>60+ items</span></h3><p>Milk, cheese, yoghurt and free-range eggs.</p></div></article>
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=75&auto=format&fit=crop" alt="Bread"><div class="cat-body"><h3>Bakery <span>40+ items</span></h3><p>Fresh loaves, rolls and sweet treats.</p></div></article>
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&q=75&auto=format&fit=crop" alt="Pantry staples"><div class="cat-body"><h3>Pantry <span>200+ items</span></h3><p>Oils, grains, spices and cupboard staples.</p></div></article>
+        <article class="card cat"><img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=800&q=75&auto=format&fit=crop" alt="Colourful fresh drinks"><div class="cat-body"><h3>Beverages <span>80+ items</span></h3><p>Juices, teas, coffee and sparkling drinks.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERS -->
+  <section id="offers" class="offers">
+    <div class="container">
+      <span class="eyebrow">Weekly offers</span>
+      <h2 class="section-title">This week's fresh deals</h2>
+      <p class="section-sub">Prices valid Monday to Sunday while stocks last.</p>
+      <div class="offer-grid">
+        <article class="card offer"><div class="img-wrap"><img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2?w=800&q=75&auto=format&fit=crop" alt="Berries"><span class="badge">20% OFF</span></div><div class="offer-body"><div><h3>Mixed Berries</h3><div class="price">$4.79<s>$5.99</s></div></div><button class="btn btn-primary btn-sm">Details</button></div></article>
+        <article class="card offer"><div class="img-wrap"><img src="https://images.unsplash.com/photo-1528825871115-3581a5387919?w=800&q=75&auto=format&fit=crop" alt="Bananas"><span class="badge">2 FOR 1</span></div><div class="offer-body"><div><h3>Organic Bananas</h3><div class="price">$1.49<s>$2.98</s></div></div><button class="btn btn-primary btn-sm">Details</button></div></article>
+        <article class="card offer"><div class="img-wrap"><img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800&q=75&auto=format&fit=crop" alt="Apples"><span class="badge">15% OFF</span></div><div class="offer-body"><div><h3>Crisp Red Apples</h3><div class="price">$2.54<s>$2.99</s></div></div><button class="btn btn-primary btn-sm">Details</button></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <div class="container about-grid">
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=1000&q=75&auto=format&fit=crop" alt="Inside the shop">
+        <div class="stamp"><strong>12+</strong>years serving<br>the neighbourhood</div>
+      </div>
+      <div>
+        <span class="eyebrow">Our story</span>
+        <h2 class="section-title">A small shop with a big love for fresh food</h2>
+        <p>Fresh Basket started as a single fruit stand on the corner. Today we're a family-run grocery that still hand-picks every crate and knows most customers by name.</p>
+        <p>We work directly with local farms and bakers, so the food on our shelves is fresher, tastier and kinder to the planet.</p>
+        <div class="stats">
+          <div><strong>40+</strong><span>Local suppliers</span></div>
+          <div><strong>5k</strong><span>Happy customers</span></div>
+          <div><strong>4.9★</strong><span>Average rating</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section id="visit" class="visit">
+    <div class="container">
+      <div class="center">
+        <span class="eyebrow">Visit us</span>
+        <h2 class="section-title">Come say hello</h2>
+        <p class="section-sub">We're right around the corner, with free parking out front.</p>
+      </div>
+      <div class="visit-grid">
+        <div class="card info-card">
+          <div class="info-row"><div class="hl-icon">📍</div><div><h3>Address</h3><p>123 Market Street, Springfield</p></div></div>
+          <div class="info-row"><div class="hl-icon">📞</div><div><h3>Phone</h3><p>(555) 012-3456</p></div></div>
+          <div class="info-row"><div class="hl-icon">✉️</div><div><h3>Email</h3><p>hello@freshbasket.example</p></div></div>
+          <div class="info-row" style="margin-bottom:0"><div class="hl-icon">🕒</div><div style="flex:1"><h3>Opening hours</h3>
+            <table class="hours"><tr><td>Mon – Fri</td><td>7:00 – 22:00</td></tr><tr><td>Saturday</td><td>8:00 – 22:00</td></tr><tr><td>Sunday</td><td>9:00 – 20:00</td></tr></table>
+          </div></div>
+        </div>
+        <div class="map" aria-label="Map placeholder (Google Maps embed in real build)">
+          <div class="road" style="left:0;right:0;top:55%;height:18px"></div>
+          <div class="road" style="top:0;bottom:0;left:30%;width:14px"></div>
+          <div class="road" style="top:0;bottom:0;left:72%;width:10px"></div>
+          <div class="pin">📍</div>
+          <div class="label">Fresh Basket</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section id="feedback">
+    <div class="container fb-grid">
+      <div class="fb-aside">
+        <span class="eyebrow">Feedback</span>
+        <h2 class="section-title">We'd love to hear from you</h2>
+        <p class="section-sub">Loved something? Missing a product? Tell us. We read every message and reply within 2 days.</p>
+        <img src="https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=900&q=75&auto=format&fit=crop" alt="Fresh produce close-up">
+      </div>
+      <form class="card form-card" id="fbForm" novalidate>
+        <div class="row">
+          <div class="field"><label for="name">Name</label><input id="name" placeholder="Jane Doe"></div>
+          <div class="field error"><label for="email">Email</label><input id="email" value="jane@" aria-describedby="email-msg"><span class="msg" id="email-msg">Please enter a valid email address</span></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="phone">Phone <span class="hint">(optional)</span></label><input id="phone" placeholder="(555) 000-0000"></div>
+          <div class="field"><label for="cat">Category</label>
+            <select id="cat"><option>Product quality</option><option>Service</option><option>Pricing</option><option>Suggestion</option><option>Other</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Your rating</label>
+          <div class="stars" id="stars" role="radiogroup" aria-label="Rating">
+            <button type="button" class="star on" aria-label="1 star">★</button><button type="button" class="star on" aria-label="2 stars">★</button><button type="button" class="star on" aria-label="3 stars">★</button><button type="button" class="star on" aria-label="4 stars">★</button><button type="button" class="star" aria-label="5 stars">★</button>
+          </div>
+        </div>
+        <div class="field"><label for="msg">Message</label>
+          <textarea id="msg" maxlength="1000" placeholder="Tell us about your experience…"></textarea>
+          <span class="hint counter" id="counter">0 / 1000</span>
+        </div>
+        <label class="check"><input type="checkbox"> I agree to be contacted about my feedback</label>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" type="submit">Send feedback</button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a href="#" class="logo" style="margin-bottom:12px"><span class="logo-mark">🧺</span>FreshBasket</a>
+        <p>Fresh food, friendly faces, fair prices. Your neighbourhood grocery since 2014.</p>
+        <div class="socials"><a href="#">IG</a><a href="#">FB</a><a href="#">X</a></div>
+      </div>
+      <div><h4>Explore</h4><ul><li>Products</li><li>Weekly offers</li><li>Our story</li><li>Feedback</li></ul></div>
+      <div><h4>Contact</h4><ul><li>123 Market Street</li><li>(555) 012-3456</li><li>hello@freshbasket.example</li></ul></div>
+    </div>
+    <div class="copy">© 2026 Fresh Basket. All rights reserved.</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✅ Thanks for your feedback!</div>
+
+<script>
+  // Theme switcher
+  const names = { fresh: "Sage Garden", citrus: "Peach Sorbet", berry: "Lavender Berry", ocean: "Seafoam", night: "Soft Night" };
+  document.querySelectorAll(".swatch").forEach(b => b.addEventListener("click", () => {
+    document.body.dataset.theme = b.dataset.set;
+    document.querySelectorAll(".swatch").forEach(s => s.setAttribute("aria-pressed", s === b));
+    document.getElementById("themeName").textContent = names[b.dataset.set];
+  }));
+
+  // Slider
+  const track = document.getElementById("slides"), dotsEl = document.getElementById("dots");
+  const count = track.children.length; let i = 0, timer;
+  for (let n = 0; n < count; n++) { const d = document.createElement("button"); d.className = "dot"; d.setAttribute("aria-label", `Go to slide ${n+1}`); d.onclick = () => go(n); dotsEl.appendChild(d); }
+  function go(n) { i = (n + count) % count; track.style.transform = `translateX(-${i*100}%)`; [...dotsEl.children].forEach((d, k) => d.classList.toggle("active", k === i)); }
+  const play = () => { clearInterval(timer); timer = setInterval(() => go(i + 1), 5000); };
+  document.querySelector(".prev").onclick = () => { go(i - 1); play(); };
+  document.querySelector(".next").onclick = () => { go(i + 1); play(); };
+  const hero = document.querySelector(".hero");
+  hero.addEventListener("mouseenter", () => clearInterval(timer));
+  hero.addEventListener("mouseleave", play);
+  go(0); play();
+
+  // Stars + counter + toast
+  const stars = [...document.querySelectorAll(".star")];
+  stars.forEach((s, k) => s.onclick = () => stars.forEach((x, j) => x.classList.toggle("on", j <= k)));
+  const msg = document.getElementById("msg"); msg.oninput = () => document.getElementById("counter").textContent = `${msg.value.length} / 1000`;
+  document.getElementById("fbForm").onsubmit = e => { e.preventDefault(); const t = document.getElementById("toast"); t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 2600); };
+</script>
+</body>
+</html>
