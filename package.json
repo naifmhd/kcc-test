@@ -38,3 +38,10 @@
     "typescript": "^5"
   }
 }
+
+
+git init
+
+git add .
+
+git commit -m "Initial commit"
